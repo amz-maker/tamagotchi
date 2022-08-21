@@ -13,6 +13,7 @@ export class MainScene extends Phaser.Scene {
     this.load.image('phaser', phaserPng);
   }
 
+  // Step 01 - Init
   public create() {
     this.image = this.add.image(400, 300, 'phaser');
 
@@ -20,5 +21,15 @@ export class MainScene extends Phaser.Scene {
       this.image.x = event.x;
       this.image.y = event.y;
     });
+  }
+
+  // Step 02 - Update Loop
+  public update(time: number, delta: number): void {
+
+  }
+
+  // Step 03 - Exit
+  public destroy(): void {
+
   }
 }

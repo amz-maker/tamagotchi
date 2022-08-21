@@ -1,7 +1,7 @@
 {
-  "name": "phaser-electron-typescript-parcel",
+  "name": "tamagotchi",
   "version": "1.0.0",
-  "description": "phaser electron typescript parcel template",
+  "description": "phaser 3 + electron + typescript + parcel",
   "main": "build/main.js",
   "scripts": {
     "----- Starter -----": "",
@@ -10,23 +10,51 @@
     "electron-start": "electron build/main.js",
     "electron-debug-chrome": "cross-env ELECTRON_DEBUG=true electron build/main.js",
     "electron-debug-vscode": "cross-env ELECTRON_DEBUG=vscode electron --remote-debugging-port=9223 build/main.js",
+    "---- Deploy exe ----": "",
+    "deploy-windows": "yarn build && electron-builder --windows nsis:ia32",
     "----- Cleaner -----": "",
     "superclean": "rimraf .cache node_modules build dist",
-    "clean": "rimraf build dist",
-    "dist": "yarn build && electron-builder"
+    "clean": "rimraf build dist"
   },
   "homepage": "https://github.com/distantcam/phaser-electron-typescript-parcel",
   "bugs": {
     "url": "https://github.com/distantcam/phaser-electron-typescript-parcel/issues"
   },
   "build": {
+    "productName": "Tamagotchi",
     "appId": "parcel.electron",
+    "asar": true,
     "mac": {
       "category": "your.app.category.type"
     },
+    "dmg": {
+      "title": "Start Electron"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true
+    },
+    "directories": {
+      "buildResources": "assets",
+      "output": "./dist/",
+      "app": "."
+    },
     "files": [
-      "build/*"
-    ]
+      "./build/**/*"
+    ],
+    "asarUnpack": "**/assets/*"
   },
   "keywords": [
     "phaser",
@@ -35,14 +63,14 @@
   "author": "distantcam",
   "license": "MIT",
   "dependencies": {
-    "phaser": "^3.54.0"
+    "phaser": "^3.55.2"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
     "download-cli": "^1.1.1",
-    "electron": "^9.4.0",
-    "electron-builder": "^22.10.5",
-    "electron-reload": "^1.5.0",
+    "electron": "^20.0.3",
+    "electron-builder": "^23.3.3",
+    "electron-reload": "^2.0.0-alpha.1",
     "npm-run-all": "^4.1.5",
     "parcel-bundler": "^1.12.5",
     "parcel-plugin-static-files-copy": "^2.6.0",
