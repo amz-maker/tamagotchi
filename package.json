@@ -1,0 +1,22 @@
+{
+  "name": "tamagotchi",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "repository": "https://github.com/amz-maker/tamagotchi.git",
+  "author": "LacoLi <gomsemarie@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "cross-env": "^7.0.3",
+    "electron": "^20.0.3",
+    "electron-builder": "^23.3.3",
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "compile": "tsc && copyfiles -f index.html build",
+    "electron-start": "electron ."
+  },
+  "dependencies": {
+    "sass": "^1.54.5"
+  }
+}
