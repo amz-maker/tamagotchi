@@ -1,19 +1,21 @@
+import VC01 from "../../assets/vc/vc_01.png";
+
 class BlackyEngine {
   c: HTMLCanvasElement; // Canvas Element
-  gl: RenderingContext; // WebGL2 Rendering Context
+  ctx: CanvasRenderingContext2D; // WebGL2 Rendering Context
   fps: number; // FPS
   state: "PAUSE" | "RUNNING" | "STOP";
 
   constructor(canvas_id: string, fps: number) {
     this.c = document.getElementById(canvas_id) as HTMLCanvasElement;
-    this.gl = this.c.getContext("experimental-webgl");
+    this.ctx = this.c.getContext("2d");
     this.fps = fps;
     this.state = "STOP";
 
     // 브라우저가 WebGL을 지원하지 않을 경우
-    if (!this.gl) {
-      alert("Your browser may not support WebGL");
-    }
+    // if (!this.gl) {
+    //   alert("Your browser may not support WebGL");
+    // }
   }
 
   public start() {
@@ -25,7 +27,7 @@ class BlackyEngine {
         this.loop();
         break;
       case "RUNNING":
-        console.log("This Game is already running");
+        console.log("Blacky is already running");
         break;
     }
   }
@@ -41,10 +43,19 @@ class BlackyEngine {
   }
 
   private init() {
-    console.log("Game is start");
+    console.log("Blacky is start");
+
+    const image = new Image(100, 100);
+    image.src = VC01;
+    image.onload = () => {
+      this.ctx.clearRect(0, 0, this.c.width, this.c.height); // Clear Canvas
+      this.ctx.drawImage(image, 100, 100, 100, 100);
+    };
+
+    console.log("Draw");
   }
   private destroy() {
-    alert("Game is stop");
+    alert("Blacky is stop");
   }
   private loop() {
     if (this.state !== "RUNNING") return;
