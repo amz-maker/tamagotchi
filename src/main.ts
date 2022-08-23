@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from "electron";
+import BlackyEngine from "./library/BlackyEngine";
 import * as path from "path";
 
 // Let electron reloads by itself
@@ -14,6 +15,7 @@ if (
 let mainWindow: Electron.BrowserWindow | null;
 
 function createWindow() {
+  console.log("create window");
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1400,
@@ -64,6 +66,7 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
   // On OS X it"s common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
+
   if (mainWindow === null) {
     createWindow();
   }

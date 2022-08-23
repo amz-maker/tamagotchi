@@ -12,11 +12,10 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
+    <link rel="stylesheet" href="style.scss" />
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>, Chromium
-    <span id="chrome-version"></span>, and Electron
-    <span id="electron-version"></span>.
+    <canvas id="game" width="1200px" height="600px"></canvas>
   </body>
+  <script src="index.ts"></script>
 </html>
