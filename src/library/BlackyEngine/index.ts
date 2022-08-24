@@ -1,16 +1,27 @@
 import VC01 from "../../assets/vc/vc_01.png";
+import GameObject from "./GameObject";
+import { IEvents } from "./interface";
+
+class TestObj extends GameObject {
+  init(): void {}
+  event(event: IEvents): void {}
+  update(): void {}
+  render(ctx: CanvasRenderingContext2D): void {}
+}
 
 class BlackyEngine {
-  c: HTMLCanvasElement; // Canvas Element
-  ctx: CanvasRenderingContext2D; // WebGL2 Rendering Context
-  fps: number; // FPS
-  state: "PAUSE" | "RUNNING" | "STOP";
+  private c: HTMLCanvasElement; // Canvas Element
+  private ctx: CanvasRenderingContext2D; // WebGL2 Rendering Context
+  private fps: number; // FPS
+  private state: "PAUSE" | "RUNNING" | "STOP";
+  private gameObjects: GameObject[];
 
-  constructor(canvas_id: string, fps: number) {
-    this.c = document.getElementById(canvas_id) as HTMLCanvasElement;
-    this.ctx = this.c.getContext("2d");
+  constructor(canvasId: string, fps: number) {
+    this.c = document.getElementById(canvasId) as HTMLCanvasElement;
+    this.ctx = this.c.getContext("2d")!;
     this.fps = fps;
     this.state = "STOP";
+    this.gameObjects = [];
 
     // 브라우저가 WebGL을 지원하지 않을 경우
     // if (!this.gl) {
@@ -42,17 +53,36 @@ class BlackyEngine {
     this.fps = fps;
   }
 
+  public addGameObject(gameObject: GameObject) {
+    this.gameObjects.push(gameObject);
+  }
+  public getGameObject(name: string) {
+    const idx = this.gameObjects.findIndex(
+      (gameObject) => gameObject.getName() === name
+    );
+    if (idx !== -1) {
+      return this.gameObjects[idx];
+    }
+    return undefined;
+  }
+  public getGameObjects() {
+    return this.gameObjects;
+  }
+
   private init() {
     console.log("Blacky is start");
+    this.gameObjects.push(new TestObj());
+    this.gameObjects.push(new TestObj());
+    this.gameObjects.push(new TestObj());
 
-    const image = new Image(100, 100);
-    image.src = VC01;
-    image.onload = () => {
-      this.ctx.clearRect(0, 0, this.c.width, this.c.height); // Clear Canvas
-      this.ctx.drawImage(image, 100, 100, 100, 100);
-    };
+    // const image = new Image(100, 100);
+    // image.src = VC01;
+    // image.onload = () => {
+    //   this.ctx.clearRect(0, 0, this.c.width, this.c.height); // Clear Canvas
+    //   this.ctx.drawImage(image, 100, 100, 100, 100);
+    // };
 
-    console.log("Draw");
+    // console.log("Draw");
   }
   private destroy() {
     alert("Blacky is stop");
@@ -61,17 +91,73 @@ class BlackyEngine {
     if (this.state !== "RUNNING") return;
 
     let that = this;
-    setTimeout(function () {
-      that.handleEvent();
-      that.handleUpdate();
-      that.handleRender();
+    setTimeout(async () => {
+      await that.handleEvent();
+      await that.handleUpdate();
+      await that.handleRender();
 
       that.loop();
     }, 1000 / this.fps);
   }
-  private handleEvent() {}
-  private handleUpdate() {}
-  private handleRender() {}
+  private async handleEvent() {
+    const events: IEvents = {
+      key: {},
+      mouse: { left: false, right: false },
+    };
+
+    await Promise.all(
+      this.gameObjects.map(async (gameObject) => {
+        return new Promise(async (resolve) => {
+          await Promise.all(
+            gameObject.getInspectors().map((inspector) => {
+              return new Promise((resolve) => {
+                inspector.event(events);
+                resolve(true);
+              });
+            })
+          );
+          gameObject.event(events);
+          resolve(true);
+        });
+      })
+    );
+  }
+  private async handleUpdate() {
+    await Promise.all(
+      this.gameObjects.map(async (gameObject) => {
+        return new Promise(async (resolve) => {
+          await Promise.all(
+            gameObject.getInspectors().map((inspector) => {
+              return new Promise((resolve) => {
+                inspector.update();
+                resolve(true);
+              });
+            })
+          );
+          gameObject.update();
+          resolve(true);
+        });
+      })
+    );
+  }
+  private async handleRender() {
+    await Promise.all(
+      this.gameObjects.map(async (gameObject) => {
+        return new Promise(async (resolve) => {
+          await Promise.all(
+            gameObject.getInspectors().map((inspector) => {
+              return new Promise((resolve) => {
+                inspector.render(this.ctx);
+                resolve(true);
+              });
+            })
+          );
+          gameObject.render(this.ctx);
+          resolve(true);
+        });
+      })
+    );
+  }
 }
 
 namespace BlackyEngine {}
