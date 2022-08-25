@@ -44,12 +44,15 @@ abstract class GameObject {
     }
   }
 
-  public getInspector(type: InspectorType, name?: string) {
+  public getInspector<T extends InspectorType>(
+    type: T,
+    name?: string
+  ): T | undefined {
     const idx = this.inspectors.findIndex(
       (insp) => insp.getType() === type && insp.getName() === name
     );
     if (idx !== -1) {
-      return this.inspectors[idx];
+      return this.inspectors[idx] as any;
     } else {
       return undefined;
     }
