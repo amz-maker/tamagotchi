@@ -12,13 +12,18 @@ abstract class GameObject {
   private inspectors: Inspector[];
   private name?: string;
 
-  constructor(initBefore?: () => void) {
+  constructor(
+    options: {
+      executeInit: boolean;
+    } = {
+      executeInit: true,
+    }
+  ) {
     this.inspectors = [];
     this.addInspector(new Transform());
-    if (initBefore !== undefined) {
-      initBefore();
+    if (options.executeInit) {
+      this.init();
     }
-    this.init();
   }
 
   abstract init(): void;
