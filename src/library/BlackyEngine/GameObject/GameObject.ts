@@ -12,9 +12,12 @@ abstract class GameObject {
   private inspectors: Inspector[];
   private name?: string;
 
-  constructor() {
+  constructor(initBefore?: () => void) {
     this.inspectors = [];
-    this.initBefore();
+    this.addInspector(new Transform());
+    if (initBefore !== undefined) {
+      initBefore();
+    }
     this.init();
   }
 
@@ -61,7 +64,7 @@ abstract class GameObject {
       (insp) => insp.getType() === type && insp.getName() === name
     );
     if (idx !== -1) {
-      return this.inspectors[idx] as any;
+      return this.inspectors[idx];
     } else {
       return undefined;
     }
@@ -69,10 +72,6 @@ abstract class GameObject {
 
   public getInspectors() {
     return this.inspectors;
-  }
-
-  private initBefore() {
-    this.addInspector(new Transform());
   }
 }
 
