@@ -1,4 +1,4 @@
-import { InspectorType } from "../enum";
+import { InspectorType } from "../common/enum";
 import Inspector, {
   Collider,
   Renderer,
@@ -6,7 +6,7 @@ import Inspector, {
   Script,
   Transform,
 } from "../Inspector";
-import { IEvents } from "../interface";
+import { IEvents } from "../common/interface";
 
 abstract class GameObject {
   private inspectors: Inspector[];
@@ -16,11 +16,11 @@ abstract class GameObject {
     options: {
       executeInit: boolean;
     } = {
-      executeInit: true,
-    }
+        executeInit: true,
+      }
   ) {
     this.inspectors = [];
-    this.addInspector(new Transform());
+    this.addInspector(new Transform(this));
     if (options.executeInit) {
       this.init();
     }
@@ -58,12 +58,12 @@ abstract class GameObject {
     }
   }
 
-  public getInspector(type: InspectorType.COLLIDER, name?: string): Collider;
-  public getInspector(type: InspectorType.RENDERER, name?: string): Renderer;
-  public getInspector(type: InspectorType.RIGID_BODY, name?: string): RigidBody;
-  public getInspector(type: InspectorType.SCRIPT, name?: string): Script;
-  public getInspector(type: InspectorType.TRANSFORM, name?: string): Transform;
-  public getInspector(type: InspectorType, name?: string): Inspector;
+  public getInspector(type: InspectorType.COLLIDER, name?: string): Collider | undefined;
+  public getInspector(type: InspectorType.RENDERER, name?: string): Renderer | undefined;
+  public getInspector(type: InspectorType.RIGID_BODY, name?: string): RigidBody | undefined;
+  public getInspector(type: InspectorType.SCRIPT, name?: string): Script | undefined;
+  public getInspector(type: InspectorType.TRANSFORM, name?: string): Transform | undefined;
+  public getInspector(type: InspectorType, name?: string): Inspector | undefined;
   public getInspector(type: InspectorType, name?: string) {
     const idx = this.inspectors.findIndex(
       (insp) => insp.getType() === type && insp.getName() === name

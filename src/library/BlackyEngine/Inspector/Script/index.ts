@@ -1,4 +1,4 @@
-import { InspectorType } from "../../enum";
+import { InspectorType } from "../../common/enum";
 import Inspector from "../inspector";
 
 class Script extends Inspector {
@@ -7,7 +7,7 @@ class Script extends Inspector {
     this.init();
   }
 
-  public init() {}
+  public init() { }
 }
 
 export default Script;

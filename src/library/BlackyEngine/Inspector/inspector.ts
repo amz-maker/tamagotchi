@@ -1,15 +1,17 @@
-import { InspectorType } from "../enum";
-import { IEvents } from "../interface";
+import { Blacky } from "../common/module";
+import { InspectorType } from "../common/enum";
+import { IEvents } from "../common/interface";
 import GameObject from "../GameObject";
 
-abstract class Inspector {
-  private gameObject?: GameObject;
+abstract class Inspector extends Blacky {
   private type: InspectorType;
   private name?: string;
 
-  constructor(type: InspectorType, name?: string) {
+  constructor(gameObject: GameObject, type: InspectorType, name?: string) {
+    super();
     this.type = type;
     this.name = name;
+    this.setGameObject(gameObject);
   }
 
   public getType() {
@@ -19,17 +21,10 @@ abstract class Inspector {
     return this.name;
   }
 
-  public setGameObject(gameObject: GameObject) {
-    return (this.gameObject = gameObject);
-  }
-  public getGameObject() {
-    return this.gameObject;
-  }
-
-  public init() {}
-  public event(event: IEvents) {}
-  public update() {}
-  public render(ctx: CanvasRenderingContext2D) {}
+  public init() { }
+  public event(event: IEvents) { }
+  public update() { }
+  public render(ctx: CanvasRenderingContext2D) { }
 }
 
 export default Inspector;

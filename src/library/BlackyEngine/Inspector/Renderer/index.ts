@@ -1,6 +1,8 @@
 import GameObject from "../../GameObject";
-import { InspectorType } from "../../enum";
+import { InspectorType } from "../../common/enum";
 import Inspector from "../inspector";
+import { Blacky, Size } from "../../common/module";
+import { Vector2 } from "../../common/module";
 
 interface IFlip {
   x: boolean;
@@ -8,12 +10,12 @@ interface IFlip {
 }
 abstract class Renderer<
   TResource extends Renderer.Resource = Renderer.Resource
-> extends Inspector {
-  protected resource: TResource;
+  > extends Inspector {
+  protected resource?: TResource;
   protected flip: IFlip;
 
-  constructor(resource: TResource) {
-    super(InspectorType.RENDERER);
+  constructor(gameObject: GameObject, resource?: TResource) {
+    super(gameObject, InspectorType.RENDERER);
 
     this.resource = this.setResource(resource).getResource();
     this.flip = this.setFlip({
@@ -27,10 +29,10 @@ abstract class Renderer<
   public getResource() {
     return this.resource;
   }
-  public setResource(resource: TResource) {
-    const gObj = this.getGameObject();
+  public setResource(resource: TResource | undefined) {
+    if (resource === undefined) return this;
 
-    gObj !== undefined && resource.setGameObject(gObj);
+    resource.setGameObject(this.getGameObject());
     this.resource = resource;
 
     return this;
@@ -43,7 +45,7 @@ abstract class Renderer<
     return this;
   }
 
-  public init() {}
+  public init() { }
   public render(ctx: CanvasRenderingContext2D): void {
     if (!!this.resource) {
       this.resource.render(ctx);
@@ -52,34 +54,33 @@ abstract class Renderer<
 }
 
 export class SpriteRenderer extends Renderer<Renderer.Resource.Sprite> {
-  constructor(resource: Renderer.Resource.Sprite) {
-    super(resource);
+
+  constructor(gameObject: GameObject, resource?: Renderer.Resource.Sprite) {
+    super(gameObject, resource);
   }
 }
 
 namespace Renderer {
-  export abstract class Resource<TObject = HTMLImageElement> {
-    protected object: TObject;
-    private gameObject?: GameObject;
+  export abstract class Resource<TObject = HTMLImageElement> extends Blacky {
+    protected object?: TObject;
 
-    constructor(object: TObject) {
-      this.object = object;
+    constructor(object?: TObject) {
+      super();
+      this.object = this.setObject(object).getObject();
     }
 
-    public getObject(): TObject {
+    public getObject() {
       return this.object;
     }
-
-    public setGameObject(gameObject: GameObject) {
-      return (this.gameObject = gameObject);
-    }
-    public getGameObject() {
-      return this.gameObject;
+    public setObject(object: TObject | undefined) {
+      this.object = object;
+      return this;
     }
 
     abstract render(ctx: CanvasRenderingContext2D): void;
   }
   export namespace Resource {
+    // Sprite
     interface ILocation {
       row: number;
       column: number;
@@ -97,9 +98,18 @@ namespace Renderer {
         super(image);
         this.location = location;
       }
-      public render(ctx: CanvasRenderingContext2D) {}
-    }
+      public render(ctx: CanvasRenderingContext2D) {
+        const transform = this.getGameObject()?.getInspector(InspectorType.TRANSFORM);
+        const object = this.getObject();
+        if (transform !== undefined && object !== undefined) {
+          const op = transform.offsetPosition();
+          const appliedScale = transform.applyScale(new Size(object.width, object.height));
 
+          ctx.drawImage(object, op.getX(), op.getY(), appliedScale.getWidth(), appliedScale.getHeight());
+        }
+      }
+    }
+    // Simple Image
     export class SimpleImage extends Renderer.Resource<HTMLImageElement> {
       constructor(src: string) {
         const img = new Image();
@@ -107,7 +117,7 @@ namespace Renderer {
         super(img);
       }
 
-      public render(ctx: CanvasRenderingContext2D) {}
+      public render(ctx: CanvasRenderingContext2D) { }
     }
   }
 }

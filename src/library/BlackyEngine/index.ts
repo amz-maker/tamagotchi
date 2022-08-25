@@ -1,12 +1,28 @@
 import VC01 from "../../assets/vc/vc_01.png";
 import GameObject from "./GameObject";
-import { IEvents } from "./interface";
+import { IEvents } from "./common/interface";
+import Renderer, { SpriteRenderer } from "./Inspector/Renderer";
+import { InspectorType } from "./common/enum";
+import { Vector2 } from "./common/module";
+import { Util } from "./common/util";
 
 class TestObj extends GameObject {
-  init(): void {}
-  event(event: IEvents): void {}
-  update(): void {}
-  render(ctx: CanvasRenderingContext2D): void {}
+  async init() {
+    const image = await Util.loadedImage(VC01);
+    const resource = new Renderer.Resource.Sprite(image);
+    const renderer = new SpriteRenderer(this).setResource(resource);
+
+    this.addInspector(renderer);
+
+    const transform = this.getInspector(InspectorType.TRANSFORM);
+    if (transform !== undefined) {
+      transform.setPosition(new Vector2(100, 100));
+    }
+
+  }
+  event(event: IEvents): void { }
+  update(): void { }
+  render(ctx: CanvasRenderingContext2D): void { }
 }
 
 class BlackyEngine {
@@ -71,8 +87,6 @@ class BlackyEngine {
 
   private init() {
     console.log("Blacky is start");
-    this.gameObjects.push(new TestObj());
-    this.gameObjects.push(new TestObj());
     this.gameObjects.push(new TestObj());
 
     // const image = new Image(100, 100);
@@ -141,6 +155,8 @@ class BlackyEngine {
     );
   }
   private async handleRender() {
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
     await Promise.all(
       this.gameObjects.map(async (gameObject) => {
         return new Promise(async (resolve) => {
@@ -160,6 +176,6 @@ class BlackyEngine {
   }
 }
 
-namespace BlackyEngine {}
+namespace BlackyEngine { }
 
 export default BlackyEngine;

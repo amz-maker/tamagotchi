@@ -1,4 +1,4 @@
-import { InspectorType } from "../../enum";
+import { InspectorType } from "../../common/enum";
 import Inspector from "../inspector";
 
 class Collider extends Inspector {
@@ -7,7 +7,7 @@ class Collider extends Inspector {
     this.init();
   }
 
-  public init() {}
+  public init() { }
 }
 
 export default Collider;
