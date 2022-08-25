@@ -9,7 +9,12 @@ class Renderer extends Inspector {
     this.init();
   }
 
-  public setRenderStrategy(strategy: Renderer.RenderStrategy) {}
+  public getRenderStrategy() {
+    return this.renderStrategy;
+  }
+  public setRenderStrategy(strategy: Renderer.RenderStrategy) {
+    this.renderStrategy = strategy;
+  }
 
   public init() {}
 }
@@ -19,7 +24,9 @@ namespace Renderer {
     abstract render(): void;
   }
   export namespace RenderStrategy {
-    //export class Sprite
+    export class Sprite extends Renderer.RenderStrategy {
+      public render() {}
+    }
   }
 }
 

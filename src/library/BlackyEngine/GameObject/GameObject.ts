@@ -1,5 +1,11 @@
 import { InspectorType } from "../enum";
-import Inspector, { Transform } from "../Inspector";
+import Inspector, {
+  Collider,
+  Renderer,
+  RigidBody,
+  Script,
+  Transform,
+} from "../Inspector";
 import { IEvents } from "../interface";
 
 abstract class GameObject {
@@ -44,10 +50,13 @@ abstract class GameObject {
     }
   }
 
-  public getInspector<T extends InspectorType>(
-    type: T,
-    name?: string
-  ): T | undefined {
+  public getInspector(type: InspectorType.COLLIDER, name?: string): Collider;
+  public getInspector(type: InspectorType.RENDERER, name?: string): Renderer;
+  public getInspector(type: InspectorType.RIGID_BODY, name?: string): RigidBody;
+  public getInspector(type: InspectorType.SCRIPT, name?: string): Script;
+  public getInspector(type: InspectorType.TRANSFORM, name?: string): Transform;
+  public getInspector(type: InspectorType, name?: string): Inspector;
+  public getInspector(type: InspectorType, name?: string) {
     const idx = this.inspectors.findIndex(
       (insp) => insp.getType() === type && insp.getName() === name
     );
