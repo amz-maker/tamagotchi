@@ -3,7 +3,7 @@ import GameObject from "./GameObject";
 import { IEvents } from "./common/interface";
 import Renderer, { SpriteRenderer } from "./Inspector/Renderer";
 import { InspectorType } from "./common/enum";
-import { Vector2 } from "./common/module";
+import { Size, Vector2 } from "./common/module";
 import { Util } from "./common/util";
 
 class TestObj extends GameObject {
@@ -12,17 +12,29 @@ class TestObj extends GameObject {
     const resource = new Renderer.Resource.Sprite(image);
     const renderer = new SpriteRenderer(this).setResource(resource);
 
+    resource.setFlip({ x: false });
     this.addInspector(renderer);
 
     const transform = this.getInspector(InspectorType.TRANSFORM);
     if (transform !== undefined) {
-      transform.setPosition(new Vector2(100, 100));
+      transform.setOffset(new Vector2(0, 0));
+      transform.setScale(new Vector2(0.5, 0.5));
+      transform.setPosition(new Vector2(700, 200));
     }
-
   }
-  event(event: IEvents): void { }
-  update(): void { }
-  render(ctx: CanvasRenderingContext2D): void { }
+  event(event: IEvents): void {}
+  update(): void {}
+  render(ctx: CanvasRenderingContext2D): void {
+    // const image = new Image();
+    // image.src = VC01;
+    // image.onload = () => {
+    //   ctx.save();
+    //   ctx.scale(1, 1);
+    //   ctx.fillRect(700, 200, 128, 128);
+    //   ctx.drawImage(image, 500, 200, image.width, image.height, 0, 0, 0, 0);
+    //   ctx.restore();
+    // };
+  }
 }
 
 class BlackyEngine {
@@ -176,6 +188,6 @@ class BlackyEngine {
   }
 }
 
-namespace BlackyEngine { }
+namespace BlackyEngine {}
 
 export default BlackyEngine;

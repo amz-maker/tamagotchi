@@ -12,7 +12,6 @@ export abstract class Blacky {
     return this.gameObject;
   }
 }
-
 export class Vector2 {
   public value: IVector2;
 
@@ -48,6 +47,8 @@ export class Vector2 {
   }
 }
 
+export const Vec2 = Vector2;
+
 export class Size {
   public value: ISize;
 
@@ -63,7 +64,7 @@ export class Size {
   }
   public setWidth(width: number) {
     if (width < 0) {
-      console.log('Width must be greater than 0')
+      console.log("Width must be greater than 0");
       return this;
     }
     this.value.width = width;
@@ -75,7 +76,7 @@ export class Size {
   }
   public setHeight(height: number) {
     if (height < 0) {
-      console.log('Height must be greater than 0')
+      console.log("Height must be greater than 0");
       return this;
     }
     this.value.height = height;
@@ -87,11 +88,11 @@ export class Size {
   }
   public setValue(value: ISize) {
     if (value.width < 0) {
-      console.log('Width must be greater than 0')
+      console.log("Width must be greater than 0");
       return this;
     }
     if (value.height < 0) {
-      console.log('Height must be greater than 0')
+      console.log("Height must be greater than 0");
       return this;
     }
     this.value = value;

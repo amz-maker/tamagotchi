@@ -6,13 +6,13 @@ import GameObject from "../../GameObject";
 class Transform extends Inspector {
   private position: Vector2;
   private offset: Vector2;
-  private scale: Size;
+  private scale: Vector2;
 
   constructor(gameObject: GameObject) {
     super(gameObject, InspectorType.TRANSFORM);
     this.position = new Vector2(0, 0);
     this.offset = new Vector2(0, 0);
-    this.scale = new Size(1, 1);
+    this.scale = new Vector2(1, 1);
     this.init();
   }
 
@@ -35,12 +35,12 @@ class Transform extends Inspector {
     return this.offset;
   }
   public setOffset(offset: Vector2) {
-    if (offset.getX() > 0 && 1 < offset.getX()) {
-      console.log('Offset x is enable to 0~1')
+    if (offset.getX() < -1 && 1 < offset.getX()) {
+      console.log("Offset x is enable to -1~1");
       return this;
     }
-    if (offset.getY() > 0 && 1 < offset.getY()) {
-      console.log('Offset y is enable to 0~1')
+    if (offset.getY() < -1 && 1 < offset.getY()) {
+      console.log("Offset y is enable to -1~1");
       return this;
     }
     this.offset = offset;
@@ -52,38 +52,35 @@ class Transform extends Inspector {
     return this.scale;
   }
 
-  public setScale(scale: Size) {
-    if (scale.getWidth() > 0) {
-      console.log('Scale x must be greater than 0')
-      return this;
-    }
-    if (scale.getHeight() > 0) {
-      console.log('Scale y must be greater than 0')
-      return this;
-    }
+  public setScale(scale: Vector2) {
     this.scale = scale;
 
     return this;
   }
 
-  // Offset이 적용된 Position 반환
-  public offsetPosition(): Vector2 {
-    const posX = this.position.getX();
-    const posY = this.position.getY();
-    const offsetX = this.offset.getX();
-    const offsetY = this.offset.getY();
+  // // Offset, Scale이 적용된 Position 반환
+  // public getRealPosition(size: Size): Vector2 {
+  //   const offset = this.getOffset();
+  //   const scale = this.getScale();
 
-    return new Vector2(posX + (posX * offsetX), posY + (posY * offsetY));
-  }
+  //   const realX =
+  //     this.position.getX() - size.getWidth() * scale.getX() * offset.getX();
+  //   const realY =
+  //     this.position.getY() - size.getHeight() * scale.getY() * offset.getY();
+
+  //   return new Vector2(realX, realY);
+  // }
 
   // Scale 적용
-  public applyScale(size: Size) {
+  public getRealSize(size: Size) {
     const scale = this.getScale();
-    return new Size(size.getWidth() * scale.getWidth(), size.getHeight() * scale.getHeight())
+    return new Size(
+      size.getWidth() * scale.getX(),
+      size.getHeight() * scale.getY()
+    );
   }
 
-
-  public init() { }
+  public init() {}
 }
 
 export default Transform;
