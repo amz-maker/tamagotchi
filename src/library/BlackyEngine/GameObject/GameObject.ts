@@ -1,5 +1,6 @@
 import { InspectorType } from "../common/enum";
 import Inspector, {
+  Animation,
   Collider,
   Renderer,
   RigidBody,
@@ -58,6 +59,7 @@ abstract class GameObject {
     }
   }
 
+  public getInspector(type: InspectorType.ANIMATION, name?: string): Animation | undefined;
   public getInspector(type: InspectorType.COLLIDER, name?: string): Collider | undefined;
   public getInspector(type: InspectorType.RENDERER, name?: string): Renderer | undefined;
   public getInspector(type: InspectorType.RIGID_BODY, name?: string): RigidBody | undefined;

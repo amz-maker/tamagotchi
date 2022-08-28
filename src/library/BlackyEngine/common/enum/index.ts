@@ -1,5 +1,5 @@
 export enum InspectorType {
-  Animation = "ANIMATION",
+  ANIMATION = "ANIMATION",
   COLLIDER = "COLLIDER",
   RENDERER = "RENDERER",
   RIGID_BODY = "RIGID_BODY",

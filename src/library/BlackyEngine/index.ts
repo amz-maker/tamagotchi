@@ -1,29 +1,55 @@
-import VC01 from "../../assets/vc/vc_01.png";
 import GameObject from "./GameObject";
 import { IEvents } from "./common/interface";
-import Renderer, { SpriteRenderer } from "./Inspector/Renderer";
+import Renderer from "./Inspector/Renderer";
 import { InspectorType } from "./common/enum";
-import { Size, Vector2 } from "./common/module";
+import { Resource, Size, Vector2 } from "./common/module";
 import { Util } from "./common/util";
+import { Animation } from "./Inspector";
+
+import VC_01 from "../../assets/vc/vc_01.png";
+import VC_SPRITE_DEFAULT from "../../assets/vc/vc_sprite_default.png";
 
 class TestObj extends GameObject {
   async init() {
-    const image = await Util.loadedImage(VC01);
-    const resource = new Renderer.Resource.Sprite(image);
-    const renderer = new SpriteRenderer(this).setResource(resource);
+    const spriteImage = await Util.loadedImage(VC_SPRITE_DEFAULT);
+    const sprite = new Resource.Sprite(spriteImage, {
+      sx: 0,
+      sy: 0,
+      sw: 256,
+      sh: 256,
+    });
+    sprite.setFlip({ x: false });
 
-    resource.setFlip({ x: false });
-    this.addInspector(renderer);
+    // Animation Setting
+    const defaultAnimation = new Animation(this, 'DEFAULT_ANI', spriteImage, [
+      {
+        spritePosition: { sx: 0, sy: 0, sw: 256, sh: 256 },
+        frame: 2,
+      },
+      {
+        spritePosition: { sx: 256, sy: 0, sw: 256, sh: 256 },
+        frame: 2,
+      }
+    ]);
+    this.addInspector(defaultAnimation);
 
+    // Renderer Setting
+    const spriteRenderer = new Renderer.SpriteRenderer(this).setResource(sprite);
+    spriteRenderer.setDefaultAnimation(defaultAnimation);
+    //spriteRenderer.setNowAnimation(defaultAnimation);
+    //spriteRenderer.startAnimation();
+    this.addInspector(spriteRenderer);
+
+    // Transform Setting
     const transform = this.getInspector(InspectorType.TRANSFORM);
     if (transform !== undefined) {
-      transform.setOffset(new Vector2(0, 0));
-      transform.setScale(new Vector2(0.5, 0.5));
+      transform.setOffset(new Vector2(-0.5, -1));
+      transform.setScale(new Vector2(0.2, 0.2));
       transform.setPosition(new Vector2(700, 200));
     }
   }
-  event(event: IEvents): void {}
-  update(): void {}
+  event(event: IEvents): void { }
+  update(): void { }
   render(ctx: CanvasRenderingContext2D): void {
     // const image = new Image();
     // image.src = VC01;
@@ -188,6 +214,6 @@ class BlackyEngine {
   }
 }
 
-namespace BlackyEngine {}
+namespace BlackyEngine { }
 
 export default BlackyEngine;
