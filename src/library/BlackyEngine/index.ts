@@ -6,7 +6,6 @@ import { Resource, Vector2 } from "./common/module";
 import { Util } from "./common/util";
 import { Animation } from "./Inspector";
 
-import VC_01 from "../../assets/vc/vc_01.png";
 import VC_SPRITE_DEFAULT from "../../assets/vc/vc_sprite_default.png";
 
 class TestObj extends GameObject {
