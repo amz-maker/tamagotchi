@@ -2,7 +2,7 @@ import GameObject from "./GameObject";
 import { IEvents } from "./common/interface";
 import Renderer from "./Inspector/Renderer";
 import { InspectorType } from "./common/enum";
-import { Resource, Size, Vector2 } from "./common/module";
+import { Resource, Vector2 } from "./common/module";
 import { Util } from "./common/util";
 import { Animation } from "./Inspector";
 
@@ -21,20 +21,22 @@ class TestObj extends GameObject {
     sprite.setFlip({ x: false });
 
     // Animation Setting
-    const defaultAnimation = new Animation(this, 'DEFAULT_ANI', spriteImage, [
+    const defaultAnimation = new Animation(this, "DEFAULT_ANI", spriteImage, [
       {
         spritePosition: { sx: 0, sy: 0, sw: 256, sh: 256 },
-        frame: 2,
+        frame: 1,
       },
       {
         spritePosition: { sx: 256, sy: 0, sw: 256, sh: 256 },
-        frame: 2,
-      }
+        frame: 1,
+      },
     ]);
     this.addInspector(defaultAnimation);
 
     // Renderer Setting
-    const spriteRenderer = new Renderer.SpriteRenderer(this).setResource(sprite);
+    const spriteRenderer = new Renderer.SpriteRenderer(this).setResource(
+      sprite
+    );
     spriteRenderer.setDefaultAnimation(defaultAnimation);
     //spriteRenderer.setNowAnimation(defaultAnimation);
     //spriteRenderer.startAnimation();
@@ -48,8 +50,8 @@ class TestObj extends GameObject {
       transform.setPosition(new Vector2(700, 200));
     }
   }
-  event(event: IEvents): void { }
-  update(): void { }
+  event(event: IEvents): void {}
+  update(): void {}
   render(ctx: CanvasRenderingContext2D): void {
     // const image = new Image();
     // image.src = VC01;
@@ -70,12 +72,16 @@ class BlackyEngine {
   private state: "PAUSE" | "RUNNING" | "STOP";
   private gameObjects: GameObject[];
 
+  private animateFrame?: number;
+  private beforeTime: number;
+
   constructor(canvasId: string, fps: number) {
     this.c = document.getElementById(canvasId) as HTMLCanvasElement;
     this.ctx = this.c.getContext("2d")!;
     this.fps = fps;
     this.state = "STOP";
     this.gameObjects = [];
+    this.beforeTime = window.performance.now();
 
     // 브라우저가 WebGL을 지원하지 않을 경우
     // if (!this.gl) {
@@ -86,10 +92,11 @@ class BlackyEngine {
   public start() {
     switch (this.state) {
       case "STOP":
+        this.state = "RUNNING";
         this.init();
+        this.loop();
       case "PAUSE":
         this.state = "RUNNING";
-        this.loop();
         break;
       case "RUNNING":
         console.log("Blacky is already running");
@@ -97,8 +104,11 @@ class BlackyEngine {
     }
   }
   public stop() {
-    this.state = "STOP";
-    this.destroy();
+    if (this.animateFrame !== undefined) {
+      this.state = "STOP";
+      window.cancelAnimationFrame(this.animateFrame);
+      this.destroy();
+    }
   }
   public pause() {
     this.state = "PAUSE";
@@ -139,17 +149,18 @@ class BlackyEngine {
   private destroy() {
     alert("Blacky is stop");
   }
-  private loop() {
+  private async loop() {
+    this.animateFrame = window.requestAnimationFrame(this.loop.bind(this));
+
+    const now = window.performance.now();
     if (this.state !== "RUNNING") return;
-
-    let that = this;
-    setTimeout(async () => {
-      await that.handleEvent();
-      await that.handleUpdate();
-      await that.handleRender();
-
-      that.loop();
-    }, 1000 / this.fps);
+    else if (this.beforeTime + 1000 / this.fps > now) return;
+    else {
+      this.beforeTime = now;
+      await this.handleEvent();
+      await this.handleUpdate();
+      await this.handleRender();
+    }
   }
   private async handleEvent() {
     const events: IEvents = {
@@ -214,6 +225,6 @@ class BlackyEngine {
   }
 }
 
-namespace BlackyEngine { }
+namespace BlackyEngine {}
 
 export default BlackyEngine;
