@@ -28,8 +28,6 @@ abstract class Renderer<
   }
   public setResource(resource: TResource | undefined) {
     if (resource === undefined) return this;
-
-    resource.setGameObject(this.getGameObject());
     this.resource = resource;
 
     return this;
@@ -85,7 +83,7 @@ abstract class Renderer<
     }
 
     if (!!this.resource) {
-      this.resource.draw(ctx);
+      this.resource.draw(this.getGameObject(), ctx);
     }
   }
 }
@@ -98,4 +96,7 @@ namespace Renderer {
   }
 }
 
+const SpriteRenderer = Renderer.SpriteRenderer;
+
+export { SpriteRenderer };
 export default Renderer;

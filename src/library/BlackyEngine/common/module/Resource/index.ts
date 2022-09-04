@@ -1,3 +1,4 @@
+import GameObject from "../../../GameObject";
 import { Blacky, Size, Vector2 } from "..";
 import { InspectorType } from "../../enum";
 import { Util } from "../../util";
@@ -7,12 +8,11 @@ interface IFlip {
     y?: boolean;
 }
 
-export abstract class Resource<TObject = HTMLImageElement> extends Blacky {
+export abstract class Resource<TObject = HTMLImageElement>{
     private object?: TObject;
     private flip: IFlip;
 
     constructor(object?: TObject) {
-        super();
         this.object = this.setObject(object).getObject();
         this.flip = this.setFlip({
             x: false,
@@ -42,7 +42,7 @@ export abstract class Resource<TObject = HTMLImageElement> extends Blacky {
     }
 
     abstract getSize(): Size;
-    abstract draw(ctx: CanvasRenderingContext2D): void;
+    abstract draw(gameObject: GameObject, ctx: CanvasRenderingContext2D): void;
 }
 export namespace Resource {
     // Sprite
@@ -89,11 +89,9 @@ export namespace Resource {
             return this;
         }
 
-        public draw(ctx: CanvasRenderingContext2D) {
+        public draw(gameObject: GameObject, ctx: CanvasRenderingContext2D) {
             const object = this.getObject();
-            const transform = this.getGameObject()?.getInspector(
-                InspectorType.TRANSFORM
-            );
+            const transform = gameObject.getInspector(InspectorType.TRANSFORM);
 
             if (transform !== undefined && object !== undefined) {
                 const position = transform.getPosition();
@@ -138,7 +136,7 @@ export namespace Resource {
             const object = this.getObject();
             return new Size(object?.width ?? 0, object?.height ?? 0);
         }
-        public draw(ctx: CanvasRenderingContext2D) { }
+        public draw(gameObject: GameObject, ctx: CanvasRenderingContext2D) { }
     }
 }
 

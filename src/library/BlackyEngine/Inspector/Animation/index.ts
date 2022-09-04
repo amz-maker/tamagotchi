@@ -45,7 +45,6 @@ class Animation extends Inspector {
   }
 
   protected setSprite(sprite: Resource.Sprite) {
-    sprite.setGameObject(this.getGameObject());
     this.sprite = sprite;
     return this;
   }
@@ -78,7 +77,7 @@ class Animation extends Inspector {
     for (let motion of this.motions) {
       if (count <= this.nowframeCount && this.nowframeCount < count + motion.frame) {
         this.sprite.setSpritePosition(motion.spritePosition);
-        this.sprite.draw(ctx);
+        this.sprite.draw(this.getGameObject(), ctx);
 
         // 애니메이션 마지막 프레임 draw 시 callback 함수 호출
 

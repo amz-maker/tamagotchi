@@ -8,7 +8,7 @@ abstract class Inspector extends Blacky {
   private name?: string;
 
   constructor(gameObject: GameObject, type: InspectorType, name?: string) {
-    super();
+    super(gameObject);
     this.type = type;
     this.name = name;
     this.setGameObject(gameObject);

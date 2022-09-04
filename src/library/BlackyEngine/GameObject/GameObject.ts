@@ -12,6 +12,7 @@ import { IEvents } from "../common/interface";
 abstract class GameObject {
   private inspectors: Inspector[];
   private name?: string;
+  private tag?: string;
 
   constructor(
     options: {
@@ -32,12 +33,42 @@ abstract class GameObject {
   abstract update(): void;
   abstract render(ctx: CanvasRenderingContext2D): void;
 
+  // 물리력 적용 (Collider, RigidBody 필수)
+  public onCollisionEnter(collision: GameObject) {
+
+  }
+  public onCollisionStay(collision: GameObject) {
+
+  }
+  public onCollisionExit(collision: GameObject) {
+
+  }
+
+  // 검증만 (Collider 필수)
+  public onTriggerEnter(collision: GameObject) {
+
+  }
+  public onTriggerStay(collision: GameObject) {
+
+  }
+  public onTriggerExit(collision: GameObject) {
+
+  }
+
   public getName() {
     return this.name;
   }
 
   public setName(name: string) {
     this.name = name;
+  }
+
+  public getTag() {
+    return this.tag;
+  }
+
+  public setTag(tag: string) {
+    this.tag = tag;
   }
 
   public addInspector(inspector: Inspector) {
@@ -64,7 +95,7 @@ abstract class GameObject {
   public getInspector(type: InspectorType.RENDERER, name?: string): Renderer | undefined;
   public getInspector(type: InspectorType.RIGID_BODY, name?: string): RigidBody | undefined;
   public getInspector(type: InspectorType.SCRIPT, name?: string): Script | undefined;
-  public getInspector(type: InspectorType.TRANSFORM, name?: string): Transform | undefined;
+  public getInspector(type: InspectorType.TRANSFORM, name?: string): Transform;
   public getInspector(type: InspectorType, name?: string): Inspector | undefined;
   public getInspector(type: InspectorType, name?: string) {
     const idx = this.inspectors.findIndex(
